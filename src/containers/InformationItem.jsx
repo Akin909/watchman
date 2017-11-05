@@ -11,7 +11,7 @@ import type { Coin } from './BoardContainer';
 type Props = {
   baseImgUrl: string,
   coin: Coin,
-  onClick: (symbol: string) => () => void,
+  onClick: (coin: Coin) => () => void,
   key: string,
 };
 
@@ -29,7 +29,7 @@ class InformationItem extends Component<Props> {
           <span>Algorithm: {coin.Algorithm}</span>
           <span>Pre-mined value: {coin.PreMinedValue}</span>
           <span>Proof type: {coin.ProofType}</span>
-          <Button onClick={onClick(coin.Symbol)}>More</Button>
+          <Button onClick={onClick(coin)}>More</Button>
         </CoinInfo>
       </Item>
     );

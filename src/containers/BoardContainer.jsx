@@ -1,12 +1,14 @@
 // @flow
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
 import React, { Component } from 'react';
 
 import Board from 'components/@molecules/board';
+import Footer from 'components/@atoms/footer';
+import Title from 'components/@atoms/title';
 
 import InformationItem from './InformationItem';
 import Pagination from './pagination';
-import Title from 'components/@atoms/title';
-import Footer from 'components/@atoms/footer';
 
 export type Coin = {
   CoinName: string,
@@ -34,10 +36,13 @@ type State = {
 };
 
 type Props = {
+  selectedCoin: Coin,
   history: (address: string) => void,
 };
 
+@observer
 export default class BoardContainer extends Component<Props, State> {
+  @observable selectedCoin = {};
   state = {
     data: [],
     pageOfItems: [],
@@ -64,13 +69,15 @@ export default class BoardContainer extends Component<Props, State> {
     }
   }
 
-  onClick = (symbol: string) => async () => {
+  @action
+  onClick = (coin: Coin) => async () => {
     try {
-      const detailUrl = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${symbol}&tsyms=BTC,USD,EUR`;
+      const detailUrl = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${coin.Symbol}&tsyms=BTC,USD,EUR`;
       const res = await fetch(detailUrl);
       const data = await res.json();
       console.log('data: ', data);
-      this.props.history.push(`/coin/${symbol}`);
+      this.selectedCoin = coin;
+      this.props.history.push(`/coin/${coin.FullName}`);
     } catch (e) {
       console.warn(e);
     }

@@ -7,6 +7,9 @@ import BoardContainer from 'containers/BoardContainer';
 import Title from 'components/@atoms/title';
 
 import CoinContainer from './containers/CoinContainer';
+import AppState from './mobx/state';
+
+const store = new AppState();
 
 type State = {
   error: string,
@@ -15,7 +18,7 @@ type State = {
 const Home = props => (
   <AppContainer>
     <Title>Watchman</Title>
-    <BoardContainer {...props} />
+    <BoardContainer store={store} {...props} />
   </AppContainer>
 );
 
