@@ -5,7 +5,8 @@ import Board from 'components/@molecules/board';
 
 import InformationItem from './InformationItem';
 import Pagination from './pagination';
-import Title from '../components/@atoms/title';
+import Title from 'components/@atoms/title';
+import Footer from 'components/@atoms/footer';
 
 type State = {
   data: any[],
@@ -42,7 +43,8 @@ export default class BoardContainer extends Component<{}, State> {
 
   onClick = (symbol: string) => async () => {
     try {
-      const detailUrl = `https://min-api.cryptocompare.com/data/pricemulti?fsym=${symbol}&tsyms=BTC,USD,EUR`;
+      console.log('symbol: ', symbol);
+      const detailUrl = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${symbol}&tsyms=BTC,USD,EUR`;
       const res = await fetch(detailUrl);
       const data = await res.json();
       console.log('data: ', data);
@@ -54,7 +56,7 @@ export default class BoardContainer extends Component<{}, State> {
   render() {
     const { data, pageOfItems, baseImgUrl } = this.state;
     return [
-      <Board>
+      <Board key={0}>
         {pageOfItems && pageOfItems.length ? (
           pageOfItems.map(coin => {
             return (
@@ -70,7 +72,7 @@ export default class BoardContainer extends Component<{}, State> {
           <Title>Loading...</Title>
         )}
       </Board>,
-      <div>
+      <Footer key={1}>
         {data.length > 0 && (
           <Pagination
             onClick={this.onClick}
@@ -79,7 +81,7 @@ export default class BoardContainer extends Component<{}, State> {
             onChangePage={this.onChangePage}
           />
         )}
-      </div>,
+      </Footer>,
     ];
   }
 }

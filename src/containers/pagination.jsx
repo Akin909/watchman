@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 
-import PageLi from './@atoms/pageLi';
-import PageLink from './@atoms/pageLink';
-import Pages from './@atoms/pages';
+import PageNumber from 'components/@molecules/pageNumber';
+import Pages from 'components/@atoms/pages';
 
 type Props = {
   initialPage: number,
@@ -44,6 +43,10 @@ export default class Pagination extends Component<Props, State> {
     }
   }
 
+  onClick = (page: number) => (e: Event) => {
+    this.setPage(page);
+  };
+
   setPage(page: number) {
     const { data } = this.props;
     let { pager } = this.state;
@@ -61,7 +64,7 @@ export default class Pagination extends Component<Props, State> {
   }
 
   //default to first page, default pageSize is 10
-  getPager(totalItems: number, currentPage: number = 1, pageSize: number = 10) {
+  getPager(totalItems: number, currentPage: number = 1, pageSize: number = 12) {
     //calculate total pages
     const totalPages = Math.ceil(totalItems / pageSize);
     let startPage, endPage;
@@ -73,7 +76,7 @@ export default class Pagination extends Component<Props, State> {
       // more than 10 total pages so calculate start and end pages
       if (currentPage <= 6) {
         startPage = 1;
-        endPage = 1;
+        endPage = totalPages;
       } else if (currentPage + 4 >= totalPages) {
         startPage = totalPages - 9;
         endPage = totalPages;
@@ -87,9 +90,10 @@ export default class Pagination extends Component<Props, State> {
     const endIndex = Math.min(startIndex + pageSize - 1, totalItems - 1);
 
     const pages = Array.from(
-      { length: endIndex + 1 },
-      (e, i) => i + startIndex
+      { length: startPage + 10 },
+      (e, i) => i + startPage
     );
+    console.log('pages: ', pages);
 
     return {
       totalItems,
@@ -103,34 +107,28 @@ export default class Pagination extends Component<Props, State> {
       pages,
     };
   }
+
+  renderPages = (page, i) => (
+    <PageNumber key={i} page={page} index={i} onClick={this.onClick} />
+  );
+
   render() {
-    const { pager: { pages }, pager } = this.state;
-    console.log('this.state.pager: ', this.state.pager);
+    const { pager } = this.state;
     return (
       <Pages>
-        <PageLi>
-          <PageLink onClick={() => this.setPage(1)}>First</PageLink>
-        </PageLi>
-        <PageLi>
-          <PageLink onClick={() => this.setPage(pager.currentPage - 1)}>
-            Previous
-          </PageLink>
-        </PageLi>
-        {pager.pages.map((page, index) => (
-          <PageLi>
-            <PageLink onClick={() => this.setPage(page)}>{index + 1}</PageLink>
-          </PageLi>
-        ))}
-        <PageLi>
-          <PageLink onClick={() => this.setPage(pager.currentPage + 1)}>
-            Next
-          </PageLink>
-        </PageLi>
-        <PageLi>
-          <PageLink onClick={() => this.setPage(pager.totalPages)}>
-            Last
-          </PageLink>
-        </PageLi>
+        <PageNumber onClick={this.onClick} page={1}>
+          First
+        </PageNumber>
+        <PageNumber page={pager.currentPage - 1} onClick={this.onClick}>
+          Previous
+        </PageNumber>
+        {pager.pages.map((page, i) => this.renderPages(page, i))}
+        <PageNumber page={pager.currentPage + 1} onClick={this.onClick}>
+          Next
+        </PageNumber>
+        <PageNumber onClick={this.onClick} page={pager.totalPages}>
+          Last
+        </PageNumber>
       </Pages>
     );
   }
