@@ -43,6 +43,9 @@ type Props = {
   history: (address: string) => void,
 };
 
+const cors = `https://cors-anywhere.herokuapp.com`;
+const baseUrl = `https://www.cryptocompare.com/api`;
+
 @inject('store')
 @observer
 export default class BoardContainer extends Component<Props, State> {
@@ -59,7 +62,7 @@ export default class BoardContainer extends Component<Props, State> {
   };
 
   async componentDidMount() {
-    const coinListUrl = `https://cors-anywhere.herokuapp.com/https://www.cryptocompare.com/api/data/coinlist/`;
+    const coinListUrl = `${cors}/${baseUrl}/data/coinlist/`;
 
     try {
       const data = await fetch(coinListUrl);
@@ -77,10 +80,14 @@ export default class BoardContainer extends Component<Props, State> {
   onClick = (coin: Coin) => async () => {
     try {
       const detailUrl = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${coin.Symbol}&tsyms=BTC,USD,EUR`;
+      const snapshotUrl = `${cors}/${baseUrl}/data/coinsnapshotfullbyid/?id=${coin.Id} `;
       const res = await fetch(detailUrl);
+      const snapshotRes = await fetch(snapshotUrl);
+      const { Data: snapshot } = await snapshotRes.json();
       const data = await res.json();
       this.props.store.selectCoin({
         ...coin,
+        snapshot,
         price: data[coin.Symbol],
         ImageUrl: `${this.state.baseImgUrl}${coin.ImageUrl}`,
       });
