@@ -8,13 +8,36 @@ import Pagination from './pagination';
 import Title from 'components/@atoms/title';
 import Footer from 'components/@atoms/footer';
 
+export type Coin = {
+  CoinName: string,
+  Algorithm: string,
+  CoinName: string,
+  FullName: string,
+  FullyPremined: string,
+  Id: string,
+  ImageUrl: string,
+  Name: string,
+  PreMinedValue: string,
+  ProofType: string,
+  SortOrder: string,
+  Sponsored: string,
+  Symbol: string,
+  TotalCoinSupply: string,
+  TotalCoinsFreeFloat: string,
+  Url: string,
+};
+
 type State = {
   data: any[],
   baseImgUrl: string,
-  pageOfItems: number[],
+  pageOfItems: Coin[],
 };
 
-export default class BoardContainer extends Component<{}, State> {
+type Props = {
+  history: (address: string) => void,
+};
+
+export default class BoardContainer extends Component<Props, State> {
   state = {
     data: [],
     pageOfItems: [],
@@ -43,11 +66,11 @@ export default class BoardContainer extends Component<{}, State> {
 
   onClick = (symbol: string) => async () => {
     try {
-      console.log('symbol: ', symbol);
       const detailUrl = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${symbol}&tsyms=BTC,USD,EUR`;
       const res = await fetch(detailUrl);
       const data = await res.json();
       console.log('data: ', data);
+      this.props.history.push(`/coin/${symbol}`);
     } catch (e) {
       console.warn(e);
     }

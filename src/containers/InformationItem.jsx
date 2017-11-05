@@ -1,33 +1,18 @@
 // @flow
 import React, { Component } from 'react';
 
+import Button from 'components/@atoms/button';
 import CoinImage from 'components/@atoms/coinImage';
 import CoinInfo from 'components/@atoms/coinInfo';
 import Header from 'components/@atoms/header';
 import Item from 'components/@atoms/item';
-import Button from 'components/@atoms/button';
+import type { Coin } from './BoardContainer';
 
 type Props = {
   baseImgUrl: string,
-  coin: {
-    CoinName: string,
-    Algorithm: string,
-    CoinName: string,
-    FullName: string,
-    FullyPremined: string,
-    Id: string,
-    ImageUrl: string,
-    Name: string,
-    PreMinedValue: string,
-    ProofType: string,
-    SortOrder: string,
-    Sponsored: string,
-    Symbol: string,
-    TotalCoinSupply: string,
-    TotalCoinsFreeFloat: string,
-    Url: string,
-  },
+  coin: Coin,
   onClick: (symbol: string) => () => void,
+  key: string,
 };
 
 class InformationItem extends Component<Props> {
