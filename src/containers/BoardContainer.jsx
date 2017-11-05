@@ -1,6 +1,6 @@
 // @flow
-import { observable } from 'mobx';
-import { observer } from 'mobx-react';
+import { action } from 'mobx';
+import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 
 import Board from 'components/@molecules/board';
@@ -36,13 +36,15 @@ type State = {
 };
 
 type Props = {
-  selectedCoin: Coin,
+  store: {
+    selectCoin: (c: Coin) => void,
+  },
   history: (address: string) => void,
 };
 
+@inject('store')
 @observer
 export default class BoardContainer extends Component<Props, State> {
-  @observable selectedCoin = {};
   state = {
     data: [],
     pageOfItems: [],
@@ -76,8 +78,8 @@ export default class BoardContainer extends Component<Props, State> {
       const res = await fetch(detailUrl);
       const data = await res.json();
       console.log('data: ', data);
-      this.selectedCoin = coin;
-      this.props.history.push(`/coin/${coin.FullName}`);
+      this.props.store.selectCoin({ ...coin, price: data });
+      this.props.history.push(`/coin/${coin.Symbol}`);
     } catch (e) {
       console.warn(e);
     }
@@ -85,6 +87,7 @@ export default class BoardContainer extends Component<Props, State> {
 
   render() {
     const { data, pageOfItems, baseImgUrl } = this.state;
+    console.log('this.props: ', this.props);
     return [
       <Board key={0}>
         {pageOfItems && pageOfItems.length ? (

@@ -1,6 +1,6 @@
-import type { Coin } from '../containers/BoardContainer';
+import { action, observable } from 'mobx';
 
-import { observable } from 'mobx';
+import type { Coin } from '../containers/BoardContainer';
 
 export default class State {
   @observable selectedCoin: {};
@@ -8,6 +8,6 @@ export default class State {
 
   @action
   selectCoin(coin: Coin) {
-    this.selectCoin = coin;
+    this.selectedCoin = coin;
   }
 }
