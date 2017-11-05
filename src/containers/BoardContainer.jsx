@@ -2,21 +2,27 @@
 import React, { Component } from 'react';
 
 import Board from 'components/@molecules/board';
-import Title from 'components/@atoms/title';
 
 import InformationItem from './InformationItem';
+import Pagination from './pagination';
+import Title from '../components/@atoms/title';
 
 type State = {
   data: any[],
   baseImgUrl: string,
-  pageLimit: number,
+  pageOfItems: number[],
 };
 
 export default class BoardContainer extends Component<{}, State> {
   state = {
     data: [],
+    pageOfItems: [],
     baseImgUrl: '',
-    pageLimit: 30,
+  };
+
+  onChangePage = (pageOfItems: any[]) => {
+    // update state with new page of items
+    this.setState({ pageOfItems });
   };
 
   async componentDidMount() {
@@ -46,11 +52,11 @@ export default class BoardContainer extends Component<{}, State> {
   };
 
   render() {
-    const { data, baseImgUrl, pageLimit } = this.state;
-    return (
+    const { data, pageOfItems, baseImgUrl } = this.state;
+    return [
       <Board>
-        {data.length ? (
-          data.slice(0, pageLimit).map(coin => {
+        {pageOfItems && pageOfItems.length ? (
+          pageOfItems.map(coin => {
             return (
               <InformationItem
                 onClick={this.onClick}
@@ -63,7 +69,17 @@ export default class BoardContainer extends Component<{}, State> {
         ) : (
           <Title>Loading...</Title>
         )}
-      </Board>
-    );
+      </Board>,
+      <div>
+        {data.length > 0 && (
+          <Pagination
+            onClick={this.onClick}
+            baseImgUrl={baseImgUrl}
+            data={data}
+            onChangePage={this.onChangePage}
+          />
+        )}
+      </div>,
+    ];
   }
 }
