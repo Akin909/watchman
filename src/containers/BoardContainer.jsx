@@ -33,6 +33,7 @@ type State = {
   data: any[],
   baseImgUrl: string,
   pageOfItems: Coin[],
+  error: string,
 };
 
 type Props = {
@@ -49,6 +50,7 @@ export default class BoardContainer extends Component<Props, State> {
     data: [],
     pageOfItems: [],
     baseImgUrl: '',
+    error: '',
   };
 
   onChangePage = (pageOfItems: any[]) => {
@@ -77,23 +79,28 @@ export default class BoardContainer extends Component<Props, State> {
       const detailUrl = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${coin.Symbol}&tsyms=BTC,USD,EUR`;
       const res = await fetch(detailUrl);
       const data = await res.json();
-      console.log('data: ', data);
-      this.props.store.selectCoin({ ...coin, price: data });
+      this.props.store.selectCoin({
+        ...coin,
+        price: data[coin.Symbol],
+        ImageUrl: `${this.state.baseImgUrl}${coin.ImageUrl}`,
+      });
       this.props.history.push(`/coin/${coin.Symbol}`);
     } catch (e) {
       console.warn(e);
+      this.setState({ error: e.message });
     }
   };
 
   render() {
-    const { data, pageOfItems, baseImgUrl } = this.state;
-    console.log('this.props: ', this.props);
+    const { data, pageOfItems, baseImgUrl, error } = this.state;
     return [
       <Board key={0}>
+        {error && <Title>{error}</Title>}
         {pageOfItems && pageOfItems.length ? (
-          pageOfItems.map(coin => {
+          pageOfItems.map((coin, index) => {
             return (
               <InformationItem
+                index={index}
                 onClick={this.onClick}
                 baseImgUrl={baseImgUrl}
                 key={coin.Id}

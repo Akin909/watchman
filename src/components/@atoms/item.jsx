@@ -1,5 +1,12 @@
 // @flow
+import React from 'react';
+import { Transition } from 'react-transition-group';
 import styled from 'styled-components';
+
+const transitionStyles = {
+  entering: '0',
+  entered: '1',
+};
 
 // #EF9a8a - border
 const Item = styled.article`
@@ -12,6 +19,16 @@ const Item = styled.article`
   min-height: 18rem;
   overflow-x: hidden;
   width: 15rem;
+  transition: opacity ${props => props.duration}ms ease-in-out;
+  opacity: ${props => transitionStyles[props.state]};
 `;
 
-export default Item;
+export default (props: any) => (
+  <Transition appear in={true} timeout={300}>
+    {state => (
+      <Item state={state} duration={props.index * 500}>
+        {props.children}
+      </Item>
+    )}
+  </Transition>
+);

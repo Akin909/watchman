@@ -2,6 +2,7 @@
 import { Provider } from 'mobx-react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import React, { Component } from 'react';
+import 'components/global.css.js';
 
 import AppContainer from 'components/@atoms/container';
 import BoardContainer from 'containers/BoardContainer';

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 
 import Coin from 'components/@atoms/coin';
 
+import CoinImage from '../components/@atoms/coinImage';
 import Container from '../components/@molecules/CoinContainer';
 
 @inject('store')
@@ -15,7 +16,11 @@ class CoinContainer extends Component {
       <Container>
         {coin ? (
           <Coin>
-            <p>{coin.FullName}</p>
+            <CoinImage src={coin.ImageUrl} />
+            <p>Name: {coin.FullName}</p>
+            <p>US Dollars: {coin.price['USD'] || 0}</p>
+            <p>Euros: {coin.price['EURO'] || 0}</p>
+            <p>Bit Coin Value: {coin.price['BTC'] || 0}</p>
           </Coin>
         ) : (
           <div>Loading...</div>

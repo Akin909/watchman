@@ -13,13 +13,14 @@ type Props = {
   coin: Coin,
   onClick: (coin: Coin) => () => void,
   key: string,
+  index: number,
 };
 
 class InformationItem extends Component<Props> {
   render() {
     const { coin, baseImgUrl, onClick } = this.props;
     return (
-      <Item>
+      <Item index={this.props.index}>
         <Header>{coin.FullName}</Header>
         <CoinInfo>
           <CoinImage
