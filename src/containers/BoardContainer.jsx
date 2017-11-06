@@ -56,6 +56,7 @@ export default class BoardContainer extends Component<Props, State> {
 
   onChangePage = (pageOfItems: any[]) => {
     // update state with new page of items
+    //Test
     this.setState({ pageOfItems });
   };
 
