@@ -2,6 +2,6 @@ import styled from 'styled-components';
 
 export default styled.main`
   width: 100vw;
-  height: 100vh;
-  background-color: whitesmoke;
+  min-height: 100vh;
+  background-color: #28316A;
 `;

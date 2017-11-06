@@ -1,8 +1,9 @@
 import { injectGlobal } from 'styled-components';
 
+// font-family: 'Open Sans', Helvetica, Arial, Sans-serif;
 export default injectGlobal`
   html, body  {
-    font-family: 'Open Sans', Helvetica, Arial, Sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, “Segoe UI”, Roboto, Helvetica, Arial, sans-serif;
     font-size: 1em;
     width: 100%;
     height: 100%;

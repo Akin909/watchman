@@ -8,12 +8,11 @@ const transitionStyles = {
   entered: '1',
 };
 
-// #EF9a8a - border
 const Item = styled.article`
   align-items: center;
   border-radius: 0.3rem;
-  border: 0.1rem solid hsla(220, 7%, 25%, 0.8);
-  background-color: hsla(0, 0%, 0%, 0.8);
+  box-shadow: -0.05rem 0.07rem 0.018em rgba(0, 0, 0, 0.5);
+  background-color: #131e4c;
   display: flex;
   flex-direction: column;
   min-height: 18rem;

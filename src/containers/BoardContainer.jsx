@@ -38,13 +38,11 @@ type State = {
 
 type Props = {
   store: {
-    selectCoin: (c: Coin) => void,
+    fetchCoins: () => void,
+    fetchCoinDetail: (coin: Coin) => void,
   },
   history: (address: string) => void,
 };
-
-const cors = `https://cors-anywhere.herokuapp.com`;
-const baseUrl = `https://www.cryptocompare.com/api`;
 
 @inject('store')
 @observer
@@ -62,35 +60,13 @@ export default class BoardContainer extends Component<Props, State> {
   };
 
   async componentDidMount() {
-    const coinListUrl = `${cors}/${baseUrl}/data/coinlist/`;
-
-    try {
-      const data = await fetch(coinListUrl);
-      const res = await data.json();
-      this.setState({
-        data: Object.values(res.Data),
-        baseImgUrl: res.BaseImageUrl,
-      });
-    } catch (e) {
-      console.warn('Error: ', e);
-    }
+    await this.props.store.fetchCoins();
   }
 
   @action
   onClick = (coin: Coin) => async () => {
     try {
-      const detailUrl = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${coin.Symbol}&tsyms=BTC,USD,EUR`;
-      const snapshotUrl = `${cors}/${baseUrl}/data/coinsnapshotfullbyid/?id=${coin.Id} `;
-      const res = await fetch(detailUrl);
-      const snapshotRes = await fetch(snapshotUrl);
-      const { Data: snapshot } = await snapshotRes.json();
-      const data = await res.json();
-      this.props.store.selectCoin({
-        ...coin,
-        snapshot,
-        price: data[coin.Symbol],
-        ImageUrl: `${this.state.baseImgUrl}${coin.ImageUrl}`,
-      });
+      await this.props.store.fetchCoinDetail(coin);
       this.props.history.push(`/coin/${coin.Symbol}`);
     } catch (e) {
       console.warn(e);
@@ -99,36 +75,42 @@ export default class BoardContainer extends Component<Props, State> {
   };
 
   render() {
-    const { data, pageOfItems, baseImgUrl, error } = this.state;
-    return [
-      <Board key={0}>
-        {error && <Title>{error}</Title>}
-        {pageOfItems && pageOfItems.length ? (
-          pageOfItems.map((coin, index) => {
-            return (
-              <InformationItem
-                index={index}
-                onClick={this.onClick}
-                baseImgUrl={baseImgUrl}
-                key={coin.Id}
-                coin={coin}
-              />
-            );
-          })
-        ) : (
-          <Title>Loading...</Title>
-        )}
-      </Board>,
-      <Footer key={1}>
-        {data.length > 0 && (
-          <Pagination
-            onClick={this.onClick}
-            baseImgUrl={baseImgUrl}
-            data={data}
-            onChangePage={this.onChangePage}
-          />
-        )}
-      </Footer>,
-    ];
+    const { pageOfItems, baseImgUrl, error } = this.state;
+    console.log('this.props.store: ', this.props.store);
+    const { data: { coins } } = this.props.store;
+    console.log('coins: ', coins);
+    return error ? (
+      <Title>{error}</Title>
+    ) : (
+      [
+        <Board key={0}>
+          {pageOfItems && pageOfItems.length ? (
+            pageOfItems.map((coin: Coin, index) => {
+              return (
+                <InformationItem
+                  index={index}
+                  onClick={this.onClick}
+                  baseImgUrl={baseImgUrl}
+                  key={coin.Id}
+                  coin={coin}
+                />
+              );
+            })
+          ) : (
+            <Title>Loading...</Title>
+          )}
+        </Board>,
+        <Footer key={1}>
+          {coins.length > 0 && (
+            <Pagination
+              onClick={this.onClick}
+              baseImgUrl={baseImgUrl}
+              data={coins}
+              onChangePage={this.onChangePage}
+            />
+          )}
+        </Footer>,
+      ]
+    );
   }
 }
