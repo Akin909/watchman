@@ -8,7 +8,7 @@ import CoinData from 'components/@molecules/coinData';
 @observer
 class CoinContainer extends Component {
   render() {
-    // console.log('SELECTED COIN: ====', this.props.store.selectedCoin);
+    console.log('SELECTED COIN: ====', this.props.store.selectedCoin);
     const { store: { selectedCoin: coin } } = this.props;
     return (
       <Container>
