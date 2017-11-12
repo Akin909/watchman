@@ -11,7 +11,7 @@ import type { Coin } from './BoardContainer';
 type Props = {
   baseImgUrl: string,
   coin: Coin,
-  onClick: (coin: Coin) => void,
+  onClick: (coin: Coin) => () => void,
   key: string,
   index: number,
 };

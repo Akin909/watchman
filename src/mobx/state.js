@@ -38,21 +38,33 @@ export default class State {
   }
 
   @action
-  async fetchCoinDetail(coin, baseImgUrl) {
+  fetciiihCoinPrice(detailUrl) {
+    return fetch(detailUrl).then(res => res.json());
+  }
+
+  @action
+  fetchCoinDetail(coin, baseImgUrl) {
     this.fetchState = 'pending';
     const detailUrl = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${coin.Symbol}&tsyms=BTC,USD,EUR`;
+    this.fetchCoinPrice(detailUrl).then(data => {
+      runInAction('Fetch Price', () => {
+        this.selectedCoin.price = data[coin.Symbol];
+      });
+    });
+
     const snapshotUrl = `${cors}/${baseUrl}/data/coinsnapshotfullbyid/?id=${coin.Id} `;
-    const data = await fetch(detailUrl).then(res => res.json());
     fetch(snapshotUrl)
       .then(res => res.json())
       .then(sRes => {
         const { Data: snapshot } = sRes;
-        this.selectedCoin = {
-          ...coin,
-          snapshot,
-          price: data[coin.Symbol],
-          ImageUrl: `${baseImgUrl}${coin.ImageUrl}`,
-        };
+        runInAction('Fetch Snapshot', () => {
+          this.selectedCoin = {
+            ...coin,
+            snapshot,
+            ImageUrl: `${baseImgUrl}${coin.ImageUrl}`,
+          };
+          this.fetchState = 'done';
+        });
       });
   }
 
