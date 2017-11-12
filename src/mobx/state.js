@@ -1,51 +1,59 @@
-import { action, observable } from 'mobx';
-import { asyncAction } from 'mobx-utils';
+import { action, observable, runInAction, useStrict } from 'mobx';
 
 import type { Coin } from '../containers/BoardContainer';
 
 const cors = `https://cors-anywhere.herokuapp.com`;
 const baseUrl = `https://www.cryptocompare.com/api`;
 
+useStrict(true);
+
 export default class State {
   @observable selectedCoin = {};
-  @observable data = { coins: [] };
+  @observable data = {};
   @observable fetchState = 'pending';
+  coinListUrl = `${cors}/${baseUrl}/data/coinlist/`;
 
-  @asyncAction
-    *fetchCoins(){
-    try {
-      const coinListUrl = `${cors}/${baseUrl}/data/coinlist/`;
-      const data = yield fetch(coinListUrl);
-      const res = yield data.json();
-      // after await, modifying state again, needs an actions:
-      this.fetchState = 'done';
-      this.data = {
-        ...this.data,
-        coins: Object.values(res.Data),
-        baseImgUrl: res.BaseImageUrl,
-      };
-      console.log('this.coins: ', this.coins);
-    } catch (e) {
-      console.warn('Error: ', e);
-    }
+  constructor() {
+    this.fetchData(this.coinListUrl);
   }
 
-  @asyncAction
-  *fetchCoinDetail(coin, baseImgUrl){
-    this.coins = [];
+  @action
+  fetchData(endpoint: string) {
+    fetch(endpoint)
+      .then(initial => initial.json())
+      .then(res => {
+        runInAction('Fetched coins', () => {
+          const coins = Object.values(res.Data);
+          this.data.coins = coins;
+          this.data.baseImgUrl = res.BaseImageUrl;
+          this.fetchState = 'done';
+        });
+      })
+      .catch(e => {
+        console.warn('Error: ', e);
+        runInAction('Failed to fetch coins', () => {
+          this.fetchState = 'failed';
+        });
+      });
+  }
+
+  @action
+  async fetchCoinDetail(coin, baseImgUrl) {
     this.fetchState = 'pending';
     const detailUrl = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${coin.Symbol}&tsyms=BTC,USD,EUR`;
     const snapshotUrl = `${cors}/${baseUrl}/data/coinsnapshotfullbyid/?id=${coin.Id} `;
-    const res = yield fetch(detailUrl);
-    const snapshotRes = yield fetch(snapshotUrl);
-    const { Data: snapshot } = yield snapshotRes.json();
-    const data = yield res.json();
-    this.selectedCoin = {
-      ...coin,
-      snapshot,
-      price: data[coin.Symbol],
-      ImageUrl: `${baseImgUrl}${coin.ImageUrl}`,
-    };
+    const data = await fetch(detailUrl).then(res => res.json());
+    fetch(snapshotUrl)
+      .then(res => res.json())
+      .then(sRes => {
+        const { Data: snapshot } = sRes;
+        this.selectedCoin = {
+          ...coin,
+          snapshot,
+          price: data[coin.Symbol],
+          ImageUrl: `${baseImgUrl}${coin.ImageUrl}`,
+        };
+      });
   }
 
   @action
