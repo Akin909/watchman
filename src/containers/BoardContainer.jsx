@@ -29,17 +29,23 @@ export type Coin = {
   Url: string,
 };
 
+type Data = {
+  coins?: Coin[],
+  baseImgUrl?: string,
+};
+
 type State = {
-  data: any[],
-  baseImgUrl: string,
+  data: Data,
   pageOfItems: Coin[],
   error: string,
 };
 
 type Props = {
+  index: number,
   store: {
     fetchCoins: () => void,
-    fetchCoinDetail: (coin: Coin) => void,
+    fetchCoinDetail: (coin: Coin) => Promise<void>,
+    data: Data,
   },
   history: (address: string) => void,
 };
@@ -48,9 +54,8 @@ type Props = {
 @observer
 export default class BoardContainer extends Component<Props, State> {
   state = {
-    data: [],
+    data: {},
     pageOfItems: [],
-    baseImgUrl: '',
     error: '',
   };
 
@@ -58,10 +63,6 @@ export default class BoardContainer extends Component<Props, State> {
     // update state with new page of items
     this.setState({ pageOfItems });
   };
-
-  async componentDidMount() {
-    await this.props.store.fetchCoins();
-  }
 
   @action
   onClick = (coin: Coin) => async () => {
@@ -75,10 +76,8 @@ export default class BoardContainer extends Component<Props, State> {
   };
 
   render() {
-    const { pageOfItems, baseImgUrl, error } = this.state;
-    console.log('this.props.store: ', this.props.store);
-    const { data: { coins } } = this.props.store;
-    console.log('coins: ', coins);
+    const { pageOfItems, error } = this.state;
+    const { store } = this.props;
     return error ? (
       <Title>{error}</Title>
     ) : (
@@ -90,7 +89,7 @@ export default class BoardContainer extends Component<Props, State> {
                 <InformationItem
                   index={index}
                   onClick={this.onClick}
-                  baseImgUrl={baseImgUrl}
+                  baseImgUrl={store.data.baseImgUrl}
                   key={coin.Id}
                   coin={coin}
                 />
@@ -101,11 +100,11 @@ export default class BoardContainer extends Component<Props, State> {
           )}
         </Board>,
         <Footer key={1}>
-          {coins.length > 0 && (
+          {store.fetchState === 'done' && (
             <Pagination
               onClick={this.onClick}
-              baseImgUrl={baseImgUrl}
-              data={coins}
+              baseImgUrl={store.data.baseImgUrl}
+              data={store.data.coins}
               onChangePage={this.onChangePage}
             />
           )}

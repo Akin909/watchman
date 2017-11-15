@@ -5,6 +5,7 @@
 
 [libs]
 src/libs/types.js
+node_modules/mobx/lib/mobx.js.flow
 [lints]
 
 [options]
