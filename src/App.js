@@ -2,32 +2,20 @@
 import 'components/global.css.js';
 
 import { Provider } from 'mobx-react';
-import DevTools from 'mobx-react-devtools';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import DevTools from 'mobx-react-devtools';
 import React, { Component } from 'react';
-
-import AppContainer from 'components/@atoms/container';
-import BoardContainer from 'containers/BoardContainer';
-import Title from 'components/@atoms/title';
 
 import AppState from './mobx/state';
 import CoinContainer from './containers/CoinContainer';
-import Nav from 'components/@molecules/nav';
+import Home from './containers/Home';
+import Title from './components/@atoms/title';
 
 const store = new AppState();
 
 type State = {
   error: string,
 };
-
-const Home = props => (
-  <AppContainer>
-    <Nav>
-      <Title>Watchman</Title>
-    </Nav>
-    <BoardContainer {...props} />
-  </AppContainer>
-);
 
 class App extends Component<{}, State> {
   state = {
@@ -39,7 +27,7 @@ class App extends Component<{}, State> {
     this.setState({ error: e.message });
   }
   render() {
-    return (
+    return !this.state.error ? (
       <Router>
         <Provider store={store}>
           <div>
@@ -49,6 +37,8 @@ class App extends Component<{}, State> {
           </div>
         </Provider>
       </Router>
+    ) : (
+      <Title>Everything That could break is broken!!</Title>
     );
   }
 }

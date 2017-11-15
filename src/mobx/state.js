@@ -38,7 +38,7 @@ export default class State {
   }
 
   @action
-  fetciiihCoinPrice(detailUrl) {
+  fetchCoinPrice(detailUrl) {
     return fetch(detailUrl).then(res => res.json());
   }
 
@@ -61,7 +61,8 @@ export default class State {
           this.selectedCoin = {
             ...coin,
             snapshot,
-            ImageUrl: `${baseImgUrl}${coin.ImageUrl}`,
+            ImageUrl: `${this.data.baseImgUrl}${coin.ImageUrl}`,
+            ...this.selectedCoin,
           };
           this.fetchState = 'done';
         });

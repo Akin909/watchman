@@ -93,7 +93,6 @@ export default class Pagination extends Component<Props, State> {
       { length: startPage + 10 },
       (e, i) => i + startPage
     );
-    console.log('pages: ', pages);
 
     return {
       totalItems,
