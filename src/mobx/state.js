@@ -46,16 +46,14 @@ export default class State {
     this.fetchState = 'pending';
     const detailUrl = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${
       coin.Symbol
-    }&tsyms=BTC,USD,EUR`;
+      }&tsyms=BTC,USD,EUR`;
     this.fetchCoinPrice(detailUrl).then(data => {
       runInAction('Fetch Price', () => {
         this.selectedCoin.price = data[coin.Symbol];
       });
     });
 
-    const snapshotUrl = `${cors}/${baseUrl}/data/coinsnapshotfullbyid/?id=${
-      coin.Id
-    } `;
+    const snapshotUrl = `${cors}/${baseUrl}/data/coinsnapshotfullbyid/?id=${coin.Id} `;
     fetch(snapshotUrl)
       .then(res => res.json())
       .then(sRes => {
