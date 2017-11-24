@@ -14,12 +14,13 @@ const Item = styled.article`
   box-shadow: -0.05rem 0.07rem 0.018em rgba(0, 0, 0, 0.5);
   background-color: #131e4c;
   display: flex;
-  flex-direction: column;
-  min-height: 18rem;
+  flex-flow: column;
+  min-height: 30rem;
   overflow-x: hidden;
-  width: 15rem;
+  width: 25rem;
   transition: opacity ${props => props.duration}ms ease-in-out;
   opacity: ${props => transitionStyles[props.state]};
+  font-size: 1.8rem;
 `;
 
 export default (props: any) => (

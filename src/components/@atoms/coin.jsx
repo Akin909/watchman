@@ -1,7 +1,8 @@
+import { width } from 'styled-system';
 import styled from 'styled-components';
 
 const Coin = styled.section`
-  width: 15rem;
+  ${width};
   height: 20rem;
   background-color: rgba(0, 0, 0, 0.6);
   display: flex;

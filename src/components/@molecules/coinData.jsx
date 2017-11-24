@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 
 import Article from 'components/@atoms/article';
 import Coin from 'components/@atoms/coin';
@@ -7,13 +8,22 @@ import Paragraph from 'components/@atoms/paragraph';
 import ReturnedHtml from 'components/@atoms/returnedHtml';
 import Title from 'components/@atoms/title';
 
-export default ({ coin }) =>
-  coin && coin.price ? (
-    [
-      <Title key={0}>{coin.FullName}</Title>,
-      <Coin key={1}>
+const PageContainer = styled.section`
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4rem;
+`;
+
+export default function CoinData({ coin }) {
+  return coin && coin.price ? (
+    <PageContainer>
+      <Title key={0}>{coin.FullName}</Title>
+      <Coin width={1} key={1}>
         <CoinImage src={coin.ImageUrl} />
-      </Coin>,
+      </Coin>
       <Article>
         <Paragraph key={2} flexDirection="column">
           US Dollars: {coin.price['USD'] || ''}
@@ -34,10 +44,11 @@ export default ({ coin }) =>
             __html: coin.snapshot.General.Description,
           }}
         />
-      </Article>,
-    ]
+      </Article>
+    </PageContainer>
   ) : (
     <Title>
       Failed to fetch coin info. <br />Sorry!
     </Title>
   );
+}

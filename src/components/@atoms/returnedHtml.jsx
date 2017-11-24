@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export default styled.section`
+const ReturnedHtml = styled.section`
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -8,6 +8,8 @@ export default styled.section`
   justify-content: center;
 
   > * {
-    width: 80%;
+    width: 100%;
   }
 `;
+
+export default ReturnedHtml;

@@ -7,11 +7,12 @@ import CoinInfo from 'components/@atoms/coinInfo';
 import Header from 'components/@atoms/header';
 import Item from 'components/@atoms/item';
 import type { Coin } from './BoardContainer';
+import FontAwesome from 'react-fontawesome';
 
 type Props = {
   baseImgUrl: string,
   coin: Coin,
-  onClick: (coin: Coin) => Promise<void>,
+  onClick: (coin: Coin) => () => Promise<void>,
   key: string,
   index: number,
 };
@@ -21,7 +22,10 @@ class InformationItem extends Component<Props> {
     const { coin, baseImgUrl, onClick } = this.props;
     return (
       <Item index={this.props.index}>
-        <Header>{coin.FullName}</Header>
+        <Header>
+          {coin.FullName}
+          <FontAwesome size="2x" name="rocket" />
+        </Header>
         <CoinInfo>
           <CoinImage
             src={`${baseImgUrl}${coin.ImageUrl}`}
